@@ -12,7 +12,7 @@ export default function Services() {
         </p>
 
         <div className="grid md:grid-cols-2 gap-10">
-          {/* 🟩 Pack Empresa LATAM */}
+          {/* Pack Empresa LATAM */}
           <div className="md:col-span-2 text-left rounded-3xl border border-emerald-200 bg-emerald-50 p-8 shadow-sm hover:shadow transition">
             <h3 className="text-2xl font-semibold text-emerald-900 mb-2">
               Pack Empresa LATAM
@@ -31,9 +31,7 @@ export default function Services() {
                 Contratos personalizados (Service Agreement, Contractor Agreement, NDA, IP Assignment,
                 carta de reclamo + algún contrato a elección tuya).
               </li>
-              <li>
-                Soporte legal sin costo por 30 días, con opción a suscripción mensual.
-              </li>
+              <li>Soporte legal sin costo por 30 días, con opción a suscripción mensual.</li>
               <li>EIN (Tax ID) y dirección legal.</li>
             </ul>
 
@@ -48,7 +46,7 @@ export default function Services() {
             </a>
           </div>
 
-          {/* 📄 Revisión y redacción de contratos */}
+          {/* Revisión y redacción */}
           <div className="text-left rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-sm hover:shadow transition">
             <h3 className="text-xl font-semibold text-emerald-900 mb-2">
               Revisión y redacción de contratos
@@ -75,14 +73,13 @@ export default function Services() {
             </div>
           </div>
 
-          {/* 💰 Reclamo en EE.UU. */}
+          {/* Reclamo en EE.UU. */}
           <div className="text-left rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-sm hover:shadow transition">
             <h3 className="text-xl font-semibold text-emerald-900 mb-2">
               Reclamo en EE.UU.
             </h3>
             <p className="text-gray-700 mb-6">
-              ¿Tu cliente de EE.UU. no cumplió o te quedó debiendo? Iniciamos tu reclamo directamente en EE.UU.
-              Pagás honorarios solo si recuperás tu dinero.
+              ¿Tu cliente de EE.UU. no cumplió o te quedó debiendo? Iniciamos tu reclamo directamente en EE.UU. Pagás honorarios solo si recuperás tu dinero.
             </p>
             <a
               href="https://wa.me/5491153873068?text=Hola%2C%20quiero%20iniciar%20un%20reclamo%20en%20EE.UU."
@@ -93,7 +90,7 @@ export default function Services() {
             </a>
           </div>
 
-          {/* 💼 Planes mensuales EADF */}
+          {/* Planes mensuales */}
           <div className="text-left rounded-3xl border border-gray-200 bg-gray-50 p-8 shadow-sm hover:shadow transition">
             <h3 className="text-xl font-semibold text-emerald-900 mb-2">
               Planes mensuales EADF
@@ -104,3 +101,22 @@ export default function Services() {
             <button
               onClick={() => {
                 const el = document.getElementById("planes");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="border border-emerald-700 text-emerald-800 px-5 py-2 rounded-lg hover:bg-emerald-50"
+            >
+              Ver planes
+            </button>
+          </div>
+        </div>
+
+        {/* Cierre */}
+        <div className="mt-14 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-700 italic">
+            Despejá las trabas legales y sólo dedicate a hacer crecer tu negocio.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
