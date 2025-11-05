@@ -1,9 +1,14 @@
 import { Button } from "./ui/button";
+import gonzaloPhoto from "../assets/ImagenHero.jpg"; // asegurate de guardar la foto ahí
 
 export default function Hero() {
   return (
-    <section id="inicio" className="relative bg-gray-50 pt-32 pb-16 text-center">
-      <div className="max-w-3xl mx-auto px-6">
+    <section
+      id="inicio"
+      className="relative bg-gray-50 pt-32 pb-16 flex flex-col-reverse md:flex-row items-center justify-end px-6 md:px-16"
+    >
+      {/* Texto y CTA */}
+      <div className="max-w-xl text-center md:text-left">
         <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 leading-tight mb-4">
           La única solución legal integral para operar con EE.UU.
         </h1>
@@ -12,8 +17,8 @@ export default function Hero() {
           Creada para emprendedores, empresas y trabajadores remotos de LATAM.
         </p>
 
-        {/* Fila 1: dos CTA principales */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-4">
+        {/* Fila 1 */}
+        <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 mb-4">
           <a
             href="https://wa.me/5491153873068?text=Hola%2C%20quiero%20crear%20una%20empresa%20en%20EE.UU."
             target="_blank"
@@ -35,8 +40,8 @@ export default function Hero() {
           </a>
         </div>
 
-        {/* Fila 2: contratos */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+        {/* Fila 2 */}
+        <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 mb-8">
           <a
             href="https://wa.me/5491153873068?text=Hola%2C%20necesito%20un%20contrato%20a%20medida."
             target="_blank"
@@ -61,6 +66,15 @@ export default function Hero() {
         <p className="text-sm text-gray-500">
           Abogado especializado · Todo en un solo lugar · Contratos claros · Suscripciones mensuales
         </p>
+      </div>
+
+      {/* Imagen */}
+      <div className="w-full md:w-1/2 flex justify-center mb-10 md:mb-0">
+        <img
+          src={gonzaloPhoto}
+          alt="Gonzalo de Foronda"
+          className="w-72 md:w-96 rounded-2xl shadow-lg object-cover"
+        />
       </div>
     </section>
   );
