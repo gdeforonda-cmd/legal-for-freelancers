@@ -211,6 +211,22 @@ img{max-width:100%}
  }
 ]
 </script>
+<!-- Medicion (nov-2026): consentimiento para Europa, visitante comun con la landing (sesion.),
+     pixel de Meta + API de conversiones y Microsoft Clarity. Ver public/medicion.js (copia identica
+     de assets/medicion.js de la landing). Los eventos van a la tabla de la landing con pagina "www/". -->
+<script>
+window.EADF = {
+  pixel: '1785568862590421',
+  whatsapp: '5491153873068',
+  dominio: /(^|\.)elabogadodelfreelancer\.com$/i,
+  sitio: 'web',
+  api: 'https://sesion.elabogadodelfreelancer.com',
+  privacidad: 'https://sesion.elabogadodelfreelancer.com/privacidad',
+  /* clarity: ID del proyecto de Microsoft Clarity (vacio = no se carga); el mismo que en la landing */
+  clarity: 'twrkm4fo3j'
+};
+</script>
+<script src="/medicion.js"></script>
 </head>
 <body>
 <div style="font-family: 'Inter', system-ui, sans-serif; color: #111111; background: #E9E6E0; width: 100%">
@@ -472,10 +488,75 @@ img{max-width:100%}
 </div>
 </div>
 <p style="margin: 0; max-width: 980px; font-size: 13px; line-height: 1.65; color: #A9A49B">Gonzalo de Foronda es abogado argentino, residente del mismo país. No está licenciado en ningún estado de Estados Unidos. Sus servicios no constituyen representación legal en Estados Unidos. La información de este sitio es general y no reemplaza el análisis de un caso concreto.</p>
-<p style="margin: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #A9A49B">© 2026 EADF · <a href="https://sesion.elabogadodelfreelancer.com/privacidad" style="text-decoration: none; color: #A9A49B">Política de privacidad</a></p>
+<p style="margin: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #A9A49B">© 2026 EADF · <a href="https://sesion.elabogadodelfreelancer.com/privacidad" style="text-decoration: none; color: #A9A49B">Política de privacidad</a> · <a href="https://sesion.elabogadodelfreelancer.com/privacidad#cookies" data-cookies style="text-decoration: none; color: #A9A49B">Preferencias de cookies</a></p>
 </div>
 </footer>
 
 </div>
+<!-- Medicion de la web (nov-2026): visitas, scroll, secciones y botones -> tabla eventos de la landing;
+     PageView, ViewContent, InitiateCheckout y Contact -> pixel de Meta + API de conversiones -->
+<script>
+(function(){
+  var C = window.EADF; if (!C || !C.medir) return;
+  var t0 = Date.now(), maxScroll = 0;
+  C.medir('lpv', { ref: document.referrer.slice(0, 200), ancho: innerWidth, alto: innerHeight, llegada: C.llegada, vuelve: !!C.origen.llegada && !Object.keys(C.llegada).length });
+  C.alPixel(function(){
+    C.meta('track', 'PageView');
+    C.meta('track', 'ViewContent', {content_ids: ['web_home']});
+  });
+  /* desde que parte de la pagina se toco cada boton */
+  function lugar(el){
+    var s = el.closest('[id]'); if (s && s.id) return s.id.replace(/-/g, '_');
+    if (el.closest('header')) return 'menu';
+    if (el.closest('footer')) return 'pie';
+    return 'cierre';
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
+    var h = a.getAttribute('href') || '', desde = lugar(a);
+    if (/sesion\.elabogadodelfreelancer\.com\/caso/.test(h)) {
+      C.medir('cta_caso', { desde: desde });
+      C.meta('track', 'InitiateCheckout', {content_ids: ['analisis_gratis', 'web_' + desde]});
+    } else if (/^https:\/\/wa\.me\//.test(h)) {
+      var guia = /gu%C3%ADa|guía/i.test(h);
+      /* (ref. xxxxxx): une el chat de WhatsApp con esta visita en la tabla eventos, como en la landing */
+      var ref = C.ref();
+      if (ref) {
+        try {
+          var u = new URL(a.href), txt = u.searchParams.get('text') || '';
+          if (!/\(ref\./.test(txt)) { u.searchParams.set('text', (txt || 'Hola Gonzalo') + ' (ref. ' + ref + ')'); a.href = u.toString(); }
+        } catch(err){}
+      }
+      C.medir(guia ? 'cta_guia' : 'cta_whatsapp', { desde: desde });
+      C.meta('track', 'Contact', {content_ids: [guia ? 'guia' : 'whatsapp', 'web']});
+    } else if (/instagram\.com/.test(h)) C.medir('cta_instagram', { desde: desde });
+    else if (/linkedin\.com/.test(h)) C.medir('cta_linkedin', { desde: desde });
+    else if (/^mailto:/.test(h)) C.medir('cta_email', { desde: desde });
+    else if (/\/privacidad/.test(h) && !a.hasAttribute('data-cookies')) C.medir('cta_privacidad', { desde: desde });
+  });
+  /* hasta donde baja, una vez por visita */
+  addEventListener('scroll', function(){
+    var d = document.documentElement, p = (scrollY + innerHeight) / d.scrollHeight * 100;
+    if (p > maxScroll) maxScroll = p;
+    [25, 50, 75, 100].forEach(function(n){ if (p >= n - 1) C.medir('scroll_' + n, null, true); });
+  }, {passive: true});
+  /* cada seccion vista (40% en pantalla, o media pantalla ocupada por ella), una vez por visita */
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){
+      if (e.isIntersecting && (e.intersectionRatio >= .4 || e.intersectionRect.height >= innerHeight * .5)) { C.medir('seccion_' + e.target.dataset.medir, null, true); io.unobserve(e.target); }
+    }); }, {threshold: [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1]});
+    [].forEach.call(document.querySelectorAll('section[id], article[id], footer'), function(s){
+      s.dataset.medir = s.id ? s.id.replace(/-/g, '_') : 'pie'; io.observe(s);
+    });
+    var cierre = [].filter.call(document.querySelectorAll('section'), function(s){ return !s.id; })[0];
+    if (cierre) { cierre.dataset.medir = 'cierre'; io.observe(cierre); }
+  }
+  /* al irse: cuanto tiempo estuvo y hasta donde bajo */
+  var salio = false;
+  function salida(){ if (salio) return; salio = true; C.medir('salida', { segundos: Math.round((Date.now() - t0) / 1000), scroll: Math.round(maxScroll) }); }
+  addEventListener('pagehide', salida);
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') salida(); else salio = false; });
+})();
+</script>
 </body>
 </html>
